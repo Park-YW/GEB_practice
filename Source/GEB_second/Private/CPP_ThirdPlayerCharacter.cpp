@@ -1,4 +1,5 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+//2021105594 ¹Ú¿µ¿ì
 
 #include "CPP_ThirdPlayerCharacter.h"
 #include "Engine/LocalPlayer.h"
@@ -9,14 +10,14 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "InputActionValue.h"
+#include "InputActionValue.h"    
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // ACPP_ProjectCharacter
 
-ACPP_ProjectCharacter::ACPP_ProjectCharacter()
+ACPP_ThirdPlayerCharacter::ACPP_ThirdPlayerCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -52,9 +53,21 @@ ACPP_ProjectCharacter::ACPP_ProjectCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	static ConstructorHelpers::FObjectFinder<UInputAction>IA_Jump(TEXT("/Game/ThirdPerson/Input/Actions/IA_Jump.IA_Jump"));
+	if (IA_Jump.Succeeded())
+		JumpAction = IA_Jump.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction>IA_Move(TEXT("/Game/ThirdPerson/Input/Actions/IA_Move.IA_Move"));
+	if (IA_Move.Succeeded())
+		MoveAction = IA_Move.Object;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction>IA_Look(TEXT("/Game/ThirdPerson/Input/Actions/IA_Look.IA_Look"));
+	if (IA_Look.Succeeded())
+		LookAction = IA_Look.Object;
 }
 
-void ACPP_ProjectCharacter::BeginPlay()
+void ACPP_ThirdPlayerCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -63,7 +76,7 @@ void ACPP_ProjectCharacter::BeginPlay()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ACPP_ProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ACPP_ThirdPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
@@ -82,10 +95,10 @@ void ACPP_ProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACPP_ProjectCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ACPP_ThirdPlayerCharacter::Move);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACPP_ProjectCharacter::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACPP_ThirdPlayerCharacter::Look);
 	}
 	else
 	{
@@ -93,7 +106,7 @@ void ACPP_ProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	}
 }
 
-void ACPP_ProjectCharacter::Move(const FInputActionValue& Value)
+void ACPP_ThirdPlayerCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -116,7 +129,7 @@ void ACPP_ProjectCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ACPP_ProjectCharacter::Look(const FInputActionValue& Value)
+void ACPP_ThirdPlayerCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();

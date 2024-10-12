@@ -1,4 +1,5 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
+//2021105594 ¹Ú¿µ¿ì
 
 #pragma once
 
@@ -16,7 +17,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config = Game)
-class ACPP_ProjectCharacter : public ACharacter
+class ACPP_ThirdPlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
@@ -45,7 +46,7 @@ class ACPP_ProjectCharacter : public ACharacter
 	UInputAction* LookAction;
 
 public:
-	ACPP_ProjectCharacter();
+	ACPP_ThirdPlayerCharacter();
 
 
 protected:
